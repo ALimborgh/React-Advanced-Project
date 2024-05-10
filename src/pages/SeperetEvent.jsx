@@ -105,6 +105,7 @@ export const SeperetEvent = () => {
 
   return (
     <div>
+      <button onClick={() => navigate('/')}>Back to Events</button>
       <h1>{event.title}</h1>
       <p>{event.description}</p>
       <img src={event.image} alt={event.title} />
