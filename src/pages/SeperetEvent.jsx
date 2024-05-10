@@ -40,16 +40,16 @@ export const SeperetEvent = () => {
 
   async function deleteEvent() {
     if (window.confirm('Are you sure you want to delete this event?')) {
-      const response = await fetch(`/events/${event.id}`, {
+      const response = await fetch(`http://localhost:3000/events/${event.id}`, {
         method: 'DELETE',
       });
   
       if (!response.ok) {
         console.error('Failed to delete event');
-        toast.error('Failed to delete event'); // Show error toast
+        toast.error('Failed to delete event');
       } else {
-        toast.success('Event deleted successfully'); // Show success toast
-        navigate('/events'); // Redirect to the events page
+        toast.success('Event deleted successfully');
+        navigate('/');
       }
     }
   }
@@ -69,6 +69,7 @@ export const SeperetEvent = () => {
     const endTime = form.elements.endTime ? form.elements.endTime.value : '';
     const location = form.elements.location ? form.elements.location.value : '';
     const description = form.elements.description ? form.elements.description.value : '';
+    const createdBy = user.id;
   
     const updatedEvent = {
       title,
@@ -78,9 +79,10 @@ export const SeperetEvent = () => {
       endTime,
       location,
       description,
+      createdBy,
     };
   
-    const response = await fetch(`/events/${event.id}`, {
+    const response = await fetch(`http://localhost:3000/events/${event.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
