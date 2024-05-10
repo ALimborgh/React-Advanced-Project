@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const SeperetEvent = () => {
   const { id } = useParams();
@@ -7,6 +9,7 @@ export const SeperetEvent = () => {
   const [user, setUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEventAndUser = async () => {
@@ -35,46 +38,65 @@ export const SeperetEvent = () => {
     fetchEventAndUser();
   }, [id]);
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
+  async function deleteEvent() {
+    if (window.confirm('Are you sure you want to delete this event?')) {
+      const response = await fetch(`/events/${event.id}`, {
+        method: 'DELETE',
+      });
   
-    const form = event.target;
+      if (!response.ok) {
+        console.error('Failed to delete event');
+        toast.error('Failed to delete event'); // Show error toast
+      } else {
+        toast.success('Event deleted successfully'); // Show success toast
+        navigate('/events'); // Redirect to the events page
+      }
+    }
+  }
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!event || !event.id) {
+      console.error('Event not loaded');
+      return;
+    }
+    const form = e.target;
     const title = form.elements.title ? form.elements.title.value : '';
-    const categoryIds = form.elements.categoryIds ? form.elements.categoryIds.value : '';
+    const categories = form.elements.categories ? form.elements.categories.value.split(', ') : [];
     const image = form.elements.image ? form.elements.image.value : '';
     const startTime = form.elements.startTime ? form.elements.startTime.value : '';
     const endTime = form.elements.endTime ? form.elements.endTime.value : '';
-    const createdBy = form.elements.createdBy ? form.elements.createdBy.value : '';
     const location = form.elements.location ? form.elements.location.value : '';
-    const discription = form.elements.discription ? form.elements.discription.value : '';
+    const description = form.elements.description ? form.elements.description.value : '';
   
     const updatedEvent = {
       title,
-      categoryIds,
+      categoryIds: categories,
       image,
       startTime,
       endTime,
-      createdBy,
       location,
-      discription,
+      description,
     };
   
-    const response = await fetch(`http://localhost:3000/events/${id}`, {
+    const response = await fetch(`/events/${event.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(updatedEvent),
     });
-  
+    
     if (!response.ok) {
-      console.error(`Error: ${response.statusText}`);
-      return;
+      console.error('Failed to update event');
+      toast.error('Failed to update event'); // Show error toast
+    } else {
+      const eventData = await response.json();
+      setEvent(eventData);
+      setIsModalOpen(false);
+      toast.success('Event updated successfully'); // Show success toast
     }
-  
-    const eventData = await response.json();
-    setEvent(eventData);
-    setIsModalOpen(false);
   };
 
   if (!event) {
@@ -136,6 +158,7 @@ export const SeperetEvent = () => {
           )}
         </div>
       )}
+      <button onClick={deleteEvent}>Delete Event</button>
     </div>
   );
 }
