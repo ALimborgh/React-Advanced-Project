@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { EventDeleteButton } from '../components/EventDeleteButton';
+import { EventDetails } from '../components/EventDetails';
+import { UserDetails } from '../components/UserDetails';
+import { EditEventButton } from '../components/EditEventButton';
 
 export const SeperetEvent = () => {
   const { id } = useParams();
@@ -29,139 +33,30 @@ export const SeperetEvent = () => {
         console.error(`Error fetching user: ${userResponse.statusText}`);
         return;
       }
-  
+
       const userData = await userResponse.json();
       setUser(userData);
+
       setIsLoading(false);
     };
-  
+
     fetchEventAndUser();
   }, [id]);
 
-  async function deleteEvent() {
-    if (window.confirm('Are you sure you want to delete this event?')) {
-      const response = await fetch(`http://localhost:3000/events/${event.id}`, {
-        method: 'DELETE',
-      });
-  
-      if (!response.ok) {
-        console.error('Failed to delete event');
-        toast.error('Failed to delete event');
-      } else {
-        toast.success('Event deleted successfully');
-        navigate('/');
-      }
-    }
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!event || !event.id) {
-      console.error('Event not loaded');
-      return;
-    }
-    const form = e.target;
-    const title = form.elements.title ? form.elements.title.value : '';
-    const categories = form.elements.categories ? form.elements.categories.value.split(', ') : [];
-    const image = form.elements.image ? form.elements.image.value : '';
-    const startTime = form.elements.startTime ? form.elements.startTime.value : '';
-    const endTime = form.elements.endTime ? form.elements.endTime.value : '';
-    const location = form.elements.location ? form.elements.location.value : '';
-    const description = form.elements.description ? form.elements.description.value : '';
-    const createdBy = user.id;
-  
-    const updatedEvent = {
-      title,
-      categoryIds: categories,
-      image,
-      startTime,
-      endTime,
-      location,
-      description,
-      createdBy,
-    };
-  
-    const response = await fetch(`http://localhost:3000/events/${event.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedEvent),
-    });
-    
-    if (!response.ok) {
-      console.error('Failed to update event');
-      toast.error('Failed to update event'); // Show error toast
-    } else {
-      const eventData = await response.json();
-      setEvent(eventData);
-      setIsModalOpen(false);
-      toast.success('Event updated successfully'); // Show success toast
-    }
-  };
-
-  if (!event) {
-    return <p>Loading...</p>;
+  if (!event || !user) {
+    return <div>Error loading event or user</div>;
   }
 
   return (
     <div>
-      <button onClick={() => navigate('/')}>Back to Events</button>
-      <h1>{event.title}</h1>
-      <p>{event.description}</p>
-      <img src={event.image} alt={event.title} />
-      <p>Start Time: {new Date(event.startTime).toLocaleString()}</p>
-      <p>End Time: {new Date(event.endTime).toLocaleString()}</p>
-      <p>Categories:</p>
-      {user && (
-        <div>
-          <p>Created by: {user.name}</p>
-          <img src={user.image} alt={user.name} />
-        </div>
-      )}
-      <button onClick={() => setIsModalOpen(true)}>Edit</button>
-      {isModalOpen && (
-        <div>
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <form onSubmit={handleFormSubmit}>
-              <label>
-                Title:
-                <input type="text" name="title" defaultValue={event.title} />
-              </label>
-              <label>
-                Categories:
-                <input type="text" name="categories" defaultValue={event && Array.isArray(event.categoryIds) ? event.categoryIds.join(', ') : ''} />
-              </label>
-              <label>
-                Image URL:
-                <input type="text" name="image" defaultValue={event.image} />
-              </label>
-              <label>
-                Start Time:
-                <input type="datetime-local" name="startTime" defaultValue={new Date(event.startTime).toISOString().substring(0, 16)} />
-              </label>
-              <label>
-                End Time:
-                <input type="datetime-local" name="endTime" defaultValue={new Date(event.endTime).toISOString().substring(0, 16)} />
-              </label>
-              <label>
-                Location:
-                <input type="text" name="location" defaultValue={event.location} />
-              </label>
-              <label>
-                Description:
-                <textarea name="description" defaultValue={event.description} />
-              </label>
-              <button type="button" onClick={() => setIsModalOpen(false)}>Cancel</button>
-              <button type="submit">Save</button>
-            </form>
-          )}
-        </div>
-      )}
-      <button onClick={deleteEvent}>Delete Event</button>
+      <EventDetails event={event} user={user}/>
+      <UserDetails user={user} />
+      <EventDeleteButton eventId={event.id} navigate={navigate} />
+      <EditEventButton eventId={event.id} navigate={navigate} />
     </div>
   );
-}
+};
