@@ -18,7 +18,6 @@ import {
 export function EditEventForm({ eventId }) {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
-  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();

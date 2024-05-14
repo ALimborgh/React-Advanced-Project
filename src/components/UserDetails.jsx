@@ -1,14 +1,16 @@
-import { Box, Heading, Image } from '@chakra-ui/react';
+import { Box, Heading, Image, VStack} from '@chakra-ui/react';
 
 export function UserDetails({ user }) {
-    return (
-        <Box>
-            {user && (
-                <>
-                <Heading>{user.name}</Heading>
-                <Image src={user.image}/>
-                </>
-            )}
-        </Box>
-    );
+  return (
+    <VStack spacing={4} align="start" borderWidth={1} borderRadius="lg" p={4}>
+      {user && (
+        <>
+          <Heading as="h3" size="md">{user.name}</Heading>
+          <Box boxSize="100px">
+            <Image borderRadius="full" boxSize="100px" src={user.image} alt={user.name} />
+          </Box>
+        </>
+      )}
+    </VStack>
+  );
 }

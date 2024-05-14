@@ -182,7 +182,7 @@ export const EventsPage = () => {
           </ModalFooter>
         </ModalContent>
         </Modal>
-        <VStack spacing={5} align="stretch">
+        <VStack spacing={5} align="start">
           {filteredEvents.map((event, index) => (
             <Stack
               key={index}

@@ -1,10 +1,10 @@
-import { Box, ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { EventsPage } from './pages/EventsPage';
-import { SeperetEvent } from './pages/SeperetEvent';
+import { SeparateEvent } from './pages/SeparateEvent';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { EditEventForm } from './components/EditEventForm';
+import { ChakraProvider, extendTheme, Box } from '@chakra-ui/react';
 
 const theme = extendTheme({
   styles: {
@@ -24,12 +24,12 @@ export const App = () => {
         <Router>
           <ToastContainer />
           <Routes>
-            <Route path="/events/:id" element={<SeperetEvent />} />
+            <Route path="/events/:id" element={<SeparateEvent />} />
             <Route path="/" element={<EventsPage />} />
-            <Route path="/event/:id/edit" element={EditEventForm}/>
+            <Route path="/event/:id/edit" element={<EditEventForm/>}/> // Wrapped EditEventForm in an element tag
           </Routes>
         </Router>
       </Box>
     </ChakraProvider>
   );
-}
+};
