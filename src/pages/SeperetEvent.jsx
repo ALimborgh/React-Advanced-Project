@@ -1,62 +1,69 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { EditEventForm } from '../components/EditEventForm';
 import { EventDeleteButton } from '../components/EventDeleteButton';
 import { EventDetails } from '../components/EventDetails';
 import { UserDetails } from '../components/UserDetails';
-import { EditEventButton } from '../components/EditEventButton';
+import { Button } from '@chakra-ui/react';
 
 export const SeperetEvent = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
   const [event, setEvent] = useState(null);
   const [user, setUser] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEventAndUser = async () => {
-      const eventResponse = await fetch(`http://localhost:3000/events/${id}`);
-      
-      if (!eventResponse.ok) {
-        console.error(`Error fetching event: ${eventResponse.statusText}`);
-        return;
+      try {
+        const eventResponse = await fetch(`http://localhost:3000/events/${id}`);
+        
+        if (!eventResponse.ok) {
+          throw new Error('Failed to fetch event');
+        }
+        
+        const eventData = await eventResponse.json();
+        setEvent(eventData);
+        
+        setIsLoading(false);
+        
+        if (eventData.createdBy) {
+          try {
+            const userResponse = await fetch(`http://localhost:3000/users/${eventData.createdBy}`);
+            
+            if (!userResponse.ok) {
+              throw new Error('Failed to fetch user');
+            }
+            
+            const userData = await userResponse.json();
+            setUser(userData);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      } catch (error) {
+        console.error(error);
       }
-  
-      const eventData = await eventResponse.json();
-      setEvent(eventData);
-  
-      const userResponse = await fetch(`http://localhost:3000/users/${eventData.createdBy}`);
-      
-      if (!userResponse.ok) {
-        console.error(`Error fetching user: ${userResponse.statusText}`);
-        return;
-      }
-
-      const userData = await userResponse.json();
-      setUser(userData);
-
-      setIsLoading(false);
     };
-
+  
     fetchEventAndUser();
   }, [id]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-  if (!event || !user) {
-    return <div>Error loading event or user</div>;
+  
+  if (!event) {
+    return <div>Error loading event</div>;
   }
-
+  
   return (
     <div>
-      <EventDetails event={event} user={user}/>
-      <UserDetails user={user} />
+      <Button onClick={() => navigate("/")}> Home </Button>
+      <EventDetails event={event} user={user} />
+      {user && <UserDetails user={user} />}
+      <EditEventForm eventId={event.id} />
       <EventDeleteButton eventId={event.id} navigate={navigate} />
-      <EditEventButton eventId={event.id} navigate={navigate} />
     </div>
   );
 };
