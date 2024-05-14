@@ -1,10 +1,16 @@
 import { Box, Button, Heading, Image, Text, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, Input, ModalFooter, Select } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Form, Link } from 'react-router-dom';
 
 export const EventsPage = () => {
   const [events, setEvents] = useState([]);
   const [title, setTitle] = useState('');
+  const [image, setImage] = useState('');
+  const [description, setDescription] = useState('');
+  const [location, setLocation] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const categories = [...new Set(events.flatMap(event => event.categoryIds))];
@@ -59,15 +65,43 @@ if (selectedCategory === 'startTime') {
       <Button onClick={onOpen}>Add event</Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add a new event</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Title</FormLabel>
-              <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-            </FormControl>
-          </ModalBody>
+          <ModalContent>
+        <ModalHeader>Add a new event</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl>
+            <FormLabel>Title</FormLabel>
+            <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Image</FormLabel>
+            <Input placeholder="Image" value={image} onChange={(e) => setImage(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Description</FormLabel>
+            <Input placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Location</FormLabel>
+            <Input placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Start Time</FormLabel>
+            <Input placeholder="Start Time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <FormLabel>End Time</FormLabel>
+            <Input placeholder="End Time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Categories</FormLabel>
+            <Select placeholder="Select categories" multiple value={selectedCategories} onChange={(e) => setSelectedCategories(Array.from(e.target.selectedOptions, option => option.value))}>
+              {categories.map((category, index) => (
+                <option key={index} value={category}>{category}</option>
+              ))}
+            </Select>
+          </FormControl>
+        </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" onClick={handleAddEvent}>Add event</Button>
           </ModalFooter>

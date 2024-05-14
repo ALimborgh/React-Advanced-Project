@@ -23,11 +23,15 @@ export function EditEventForm({ eventId }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
-  useEffect(() => {
+  const fetchEvent = () => {
     fetch(`http://localhost:3000/events/${id}`)
       .then(response => response.json())
       .then(data => setEvent(data));
-  }, [id]);
+  };
+
+  useEffect(() => {
+    fetchEvent();
+  }, []);
 
   function handleInputChange(e) {
     setEvent({
@@ -38,38 +42,37 @@ export function EditEventForm({ eventId }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-
-      try {
-        fetch(`http://localhost:3000/events/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(event)
-        })
-          .then(() => {
-            navigate(`/events/${id}`);
-            toast({
-              title: "Event updated.",
-              description: "Your event has been updated successfully.",
-              status: "success",
-              duration: 9000,
-              isClosable: true,
-            });
-            onClose();
-          });
-      } catch (error) {
-        console.error('Error updating event:', error);
+  
+    fetch(`http://localhost:3000/events/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    })
+      .then(response => response.json())
+      .then(data => {
+        setEvent(prevEvent => ({ ...prevEvent, ...data }));
+        fetchEvent();
         toast({
-          title: "An error occurred.",
-          description: "Failed to update event.",
-          status: "error",
-          duration: 9000,
+          title: 'Event updated successfully',
+          status: 'success',
+          duration: 5000,
           isClosable: true,
         });
-      }
+        onClose();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        toast({
+          title: 'Failed to update event',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      });
   }
-  
+
   function handleEditButtonClick() {
     setIsEditing(true);
     onOpen();
