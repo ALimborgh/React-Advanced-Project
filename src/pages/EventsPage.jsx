@@ -19,7 +19,7 @@ import {
   VStack,
   Stack,
 } from '@chakra-ui/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 
 export const EventsPage = () => {
@@ -35,7 +35,6 @@ export const EventsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategories] = useState([]);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -69,6 +68,7 @@ export const EventsPage = () => {
       },
       body: JSON.stringify(event),
     });
+    
     const newEvent = await response.json();
     setEvents([...events, newEvent]);
     onClose();
@@ -122,12 +122,12 @@ export const EventsPage = () => {
             shadow="md"
             borderWidth="1px"
             borderRadius="lg"
-            overflow="hidden"
             bg="gray.700"
             color="white"
             p={5}
             mt={2}
             mb={2} 
+            
             >Add event</Button>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />

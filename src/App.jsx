@@ -26,7 +26,7 @@ export const App = () => {
           <Routes>
             <Route path="/events/:id" element={<SeparateEvent />} />
             <Route path="/" element={<EventsPage />} />
-            <Route path="/event/:id/edit" element={<EditEventForm/>}/> // Wrapped EditEventForm in an element tag
+            <Route path="/event/:id/edit" element={<EditEventForm/>}/>
           </Routes>
         </Router>
       </Box>
