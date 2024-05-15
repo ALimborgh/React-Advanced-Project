@@ -125,7 +125,13 @@ export function EditEventForm({ eventId }) {
             <FormLabel>Description</FormLabel>
             <Input name="description" value={event.description} onChange={handleInputChange} />
           </FormControl>
-          <Button mt={4} bg="gray.700" color="white" type="submit">Save</Button>
+          <Button 
+           mt={4} 
+           bg="gray.700" 
+           color="white" 
+           type="submit"
+           variant="outline"
+           >Save</Button>
         </form>
       </ModalBody>
     </ModalContent>

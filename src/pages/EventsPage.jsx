@@ -68,7 +68,7 @@ export const EventsPage = () => {
       },
       body: JSON.stringify(event),
     });
-    
+
     const newEvent = await response.json();
     setEvents([...events, newEvent]);
     onClose();
@@ -203,7 +203,7 @@ export const EventsPage = () => {
                   <Text mt={4}>Start Time: {event.startTime}</Text>
                   <Text mt={4}>End Time: {event.endTime}</Text>
                   <Text mt={4}>
-                    Categories: 
+                    Categories:{" "}
                     {event.categoryIds ? event.categoryIds.map(id => {
                       const matchingCategory = categories.find(category => category.id === id.toString());
                       return matchingCategory?.name;

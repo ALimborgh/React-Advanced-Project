@@ -29,7 +29,7 @@ export function EventDetails({ event, user, categories }) {
       <Text>End time: {event.endTime}</Text>
       <Text>Description: {event.description}</Text>
       <Text mt={4}>
-            Categories: 
+            Categories:{" "} 
             {event.categoryIds && categories && Array.isArray(categories) ? event.categoryIds.map(id => {
             const matchingCategory = categories.find(category => category.id === id.toString());
             return matchingCategory?.name;
