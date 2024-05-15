@@ -2,7 +2,15 @@ import { Box, Heading, Image, VStack} from '@chakra-ui/react';
 
 export function UserDetails({ user }) {
   return (
-    <VStack spacing={4} align="start" borderWidth={1} borderRadius="lg" p={4}>
+    <VStack 
+      spacing={4} 
+      align="start" 
+      borderWidth={1} 
+      borderRadius="lg" 
+      bg="gray.700" 
+      borderColor="white" 
+      p={4}
+      >
       {user && (
         <>
           <Heading as="h3" size="md">{user.name}</Heading>

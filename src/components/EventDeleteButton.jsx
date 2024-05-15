@@ -31,8 +31,13 @@ export function EventDeleteButton({ eventId, navigate }) {
     }
 
     return (
-        <Button onClick={deleteEvent}>
-            Delete Event
-        </Button>
+        <Button 
+        onClick={deleteEvent}
+        colorScheme="red"
+        size="md"
+        variant="outline"
+      >
+        Delete Event
+      </Button>
     );
 }

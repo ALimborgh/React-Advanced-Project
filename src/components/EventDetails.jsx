@@ -11,7 +11,15 @@ export function EventDetails({ event, user, categories }) {
   }
 
   return (
-    <VStack spacing={4} align="start" borderWidth={1} borderRadius="lg" p={4}>
+    <VStack 
+      spacing={4} 
+      align="start" 
+      borderWidth={1} 
+      borderRadius="lg" 
+      p={4} 
+      bg="gray.700" 
+      borderColor="white"
+      >
       <Heading as="h2" size="lg">{event.title}</Heading>
       <Box boxSize="300px">
         <Image src={event.image} alt={event.title} boxSize="300px" objectFit="cover" />

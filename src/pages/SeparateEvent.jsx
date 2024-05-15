@@ -71,7 +71,14 @@ export const SeparateEvent = () => {
 
   return (
     <VStack spacing={4} align="start">
-      <Button colorScheme="teal" mt={4} onClick={() => navigate('/')}>Go Home</Button>
+      <Button 
+        color="white" 
+        bg="gray.700" 
+        mt={4} 
+        onClick={() => navigate('/')}
+        borderColor="white"
+        variant="outline"
+        >Go Home</Button>
       {isLoading ? (
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
           <CircularProgress isIndeterminate color="green.300" />

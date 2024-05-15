@@ -16,11 +16,8 @@ import {
   Input, 
   ModalFooter, 
   Select,
-  Flex,
-  Spacer,
   VStack,
   Stack,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';

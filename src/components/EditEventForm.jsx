@@ -83,14 +83,20 @@ export function EditEventForm({ eventId }) {
 
   return (
     <>
-      <Button onClick={handleEditButtonClick}>
+      <Button 
+        onClick={handleEditButtonClick}
+        color="white"
+        bg="gray.700"
+        size="md"
+        variant="outline"
+      >
         Edit Event
       </Button>
 
       {isEditing && (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
-    <ModalContent>
+    <ModalContent bg="gray.700" color="white">
       <ModalHeader>Edit Event</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
@@ -119,7 +125,7 @@ export function EditEventForm({ eventId }) {
             <FormLabel>Description</FormLabel>
             <Input name="description" value={event.description} onChange={handleInputChange} />
           </FormControl>
-          <Button type="submit">Save</Button>
+          <Button mt={4} bg="gray.700" color="white" type="submit">Save</Button>
         </form>
       </ModalBody>
     </ModalContent>
