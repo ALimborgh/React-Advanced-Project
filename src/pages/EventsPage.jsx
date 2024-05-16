@@ -45,14 +45,9 @@ export const EventsPage = () => {
       const response = await fetch('http://localhost:3000/events');
       const events = await response.json();
     
-      console.log('Fetched events:', events);
-    
       let filtered = [...events];
     
       if (searchTerm) {
-        console.log('Search term:', searchTerm);
-        console.log('Selected category:', selectedCategory);
-        
         if (selectedCategory === 'startTime') {
           const searchTermDate = new Date(searchTerm);
           if (!isNaN(searchTermDate)) {
@@ -70,8 +65,6 @@ export const EventsPage = () => {
           );
         }
       }
-  
-      console.log('Filtered events:', filtered);
     
       setFilteredEvents(filtered);
       setEvents(events);
@@ -108,7 +101,6 @@ export const EventsPage = () => {
   
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
-    console.log('selectedCategory', selectedCategory);
   };
   
   if (isLoading) {
