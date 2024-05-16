@@ -38,29 +38,59 @@ export const EventsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [filteredEvents, setFilteredEvents] = useState([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch('http://localhost:3000/events');
       const events = await response.json();
+    
+      console.log('Fetched events:', events);
+    
+      let filtered = [...events];
+    
+      if (searchTerm) {
+        console.log('Search term:', searchTerm);
+        console.log('Selected category:', selectedCategory);
+        
+        if (selectedCategory === 'startTime') {
+          const searchTermDate = new Date(searchTerm);
+          if (!isNaN(searchTermDate)) {
+            filtered = filtered.filter(event => 
+              new Date(event.startTime).getTime() === searchTermDate.getTime()
+            );
+          }
+        } else if (selectedCategory === 'location') {
+          filtered = filtered.filter(event => 
+            event.location.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        } else {
+          filtered = filtered.filter(event =>
+            event.title.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
+      }
+  
+      console.log('Filtered events:', filtered);
+    
+      setFilteredEvents(filtered);
       setEvents(events);
     };
-
+  
     const fetchCategories = async () => {
       const response = await fetch('http://localhost:3000/categories');
       const categories = await response.json();
       return categories;
     };
-
+  
     fetchCategories().then((data) => {
       setCategories(data);
       setIsLoading(false);
     });
-
+  
     fetchEvents();
-  }, []);
-
-
+  }, [searchTerm, selectedCategory]);
+  
   const handleAddEvent = async () => {
     const event = { title };
     const response = await fetch('http://localhost:3000/events', {
@@ -70,35 +100,21 @@ export const EventsPage = () => {
       },
       body: JSON.stringify(event),
     });
-
+  
     const newEvent = await response.json();
     setEvents([...events, newEvent]);
     onClose();
   };
-
+  
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
     console.log('selectedCategory', selectedCategory);
   };
-
-  let filteredEvents = [...events];
-
-  if (searchTerm) {
-    filteredEvents = filteredEvents.filter(event =>
-      event.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }
   
-  if (selectedCategory === 'startTime') {
-    filteredEvents.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-  } else if (selectedCategory === 'location') {
-    filteredEvents = filteredEvents.filter(event => event.location.toLowerCase().includes(searchTerm.toLowerCase()));
-  }
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
+  
   return (
     <>
     <Container maxW="container.l">
@@ -162,6 +178,22 @@ export const EventsPage = () => {
                 <FormLabel>End Time</FormLabel>
                 <Input placeholder="End Time" type="datetime-local" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
               </FormControl>
+              <FormControl>
+                <FormLabel>Categories</FormLabel>
+                <Select
+                  placeholder="Select categories"
+                  value={selectedCategories}
+                  onChange={(e) => setSelectedCategories(e.target.value)}
+                  multiple
+                  color="black"
+                >
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
             </ModalBody>
           <ModalFooter>
             <Button             
@@ -176,47 +208,45 @@ export const EventsPage = () => {
         </ModalContent>
         </Modal>
           <VStack spacing={5} align="start">
-            <SimpleGrid columns={{ base:1 , md:3}} spacing={5} >
-            {events
-            .filter(event => event.title.includes(searchTerm) || event.description.includes(searchTerm))
-            .map((event) => (
-                <Stack
-                  key={event.id}
-                  shadow="md"
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  overflow="hidden"
-                  bg="gray.700"
-                  color="white"
-                  p={5}
-                >
-                  <Box flexShrink={0}>
-                    <Image boxSize="100%" objectFit="cover" src={event.image} alt={event.title} />
-                  </Box>
-                  <Box mt={5}>
-                    <Link to={`/events/${event.id}`}>
-                      <Heading fontSize="xl">{event.title}</Heading>
-                      <Text mt={4}>{event.description}</Text>
-                      <Text mt={4}>Start Time: {event.startTime}</Text>
-                      <Text mt={4}>End Time: {event.endTime}</Text>
-                      <Text mt={4}>
-                        Categories:{" "}
-                        {event.categoryIds
-                          ? event.categoryIds
-                              .map((id) => {
-                                const matchingCategory = categories.find(
-                                  (category) => category.id === id.toString()
-                                );
-                                return matchingCategory?.name;
-                              })
-                              .join(", ")
-                          : "None"}
-                      </Text>
-                    </Link>
-                  </Box>
-                </Stack>
-              ))}
-            </SimpleGrid>
+          <SimpleGrid columns={{ base:1 , md:3}} spacing={5} >
+            {filteredEvents.map((event) => (
+              <Stack
+                key={event.id}
+                shadow="md"
+                borderWidth="1px"
+                borderRadius="lg"
+                overflow="hidden"
+                bg="gray.700"
+                color="white"
+                p={5}
+              >
+                <Box flexShrink={0}>
+                  <Image boxSize="100%" objectFit="cover" src={event.image} alt={event.title} />
+                </Box>
+                <Box mt={5}>
+                  <Link to={`/events/${event.id}`}>
+                    <Heading fontSize="xl">{event.title}</Heading>
+                    <Text mt={4}>{event.description}</Text>
+                    <Text mt={4}>Start Time: {event.startTime}</Text>
+                    <Text mt={4}>End Time: {event.endTime}</Text>
+                    <Text mt={4}>
+                      Categories:{" "}
+                      {event.categoryIds
+                        ? event.categoryIds
+                            .map((id) => {
+                              const matchingCategory = categories.find(
+                                (category) => category.id === id.toString()
+                              );
+                              return matchingCategory?.name;
+                            })
+                            .join(", ")
+                        : "None"}
+                    </Text>
+                  </Link>
+                </Box>
+              </Stack>
+            ))}
+          </SimpleGrid>
           </VStack>
       </Box>
       </Container>

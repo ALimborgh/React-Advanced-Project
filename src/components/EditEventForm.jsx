@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { 
   Button, 
   Modal, 
@@ -15,7 +15,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-export function EditEventForm({ eventId }) {
+export function EditEventForm({ eventId, navigate }) {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -111,11 +111,11 @@ export function EditEventForm({ eventId }) {
           </FormControl>
           <FormControl>
             <FormLabel>Start Time</FormLabel>
-            <Input name="startTime" value={event.startTime} onChange={handleInputChange} />
+            <Input name="startTime" type="datetime-local" value={event.startTime} onChange={handleInputChange} />
           </FormControl>
           <FormControl>
             <FormLabel>End Time</FormLabel>
-            <Input name="endTime" value={event.endTime} onChange={handleInputChange} />
+            <Input name="endTime" type="datetime-local" value={event.endTime} onChange={handleInputChange} />
           </FormControl>
           <FormControl>
             <FormLabel>Image</FormLabel>

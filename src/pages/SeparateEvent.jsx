@@ -97,10 +97,10 @@ export const SeparateEvent = () => {
                 </Heading>
                 <UserDetails user={user} />
                 <Box mt={8}>
-                  <EditEventForm event={event} />
+                  <EditEventForm event={event} navigate={navigate}/>
                 </Box>
                 <Box mt={4}>
-                  <EventDeleteButton eventId={id} colorScheme="red" />
+                  <EventDeleteButton eventId={id} navigate={navigate} colorScheme="red" />
                 </Box>
               </Flex>
             </Box>

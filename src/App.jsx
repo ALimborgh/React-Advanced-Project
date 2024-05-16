@@ -4,7 +4,7 @@ import { SeparateEvent } from './pages/SeparateEvent';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { EditEventForm } from './components/EditEventForm';
-import { ChakraProvider, extendTheme, Box } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme, Box, CSSReset } from '@chakra-ui/react';
 
 const theme = extendTheme({
   styles: {
@@ -20,6 +20,7 @@ const theme = extendTheme({
 export const App = () => {
   return (
     <ChakraProvider theme={theme}>
+      <CSSReset />
       <Box minH="100vh">
         <Router>
           <ToastContainer />
