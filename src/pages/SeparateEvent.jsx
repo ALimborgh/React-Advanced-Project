@@ -97,7 +97,7 @@ export const SeparateEvent = () => {
                 </Heading>
                 <UserDetails user={user} />
                 <Box mt={8}>
-                  <EditEventForm event={event} navigate={navigate}/>
+                  <EditEventForm event={event}/>
                 </Box>
                 <Box mt={4}>
                   <EventDeleteButton eventId={id} navigate={navigate} colorScheme="red" />

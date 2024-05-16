@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { 
   Button, 
   Modal, 
@@ -15,7 +15,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-export function EditEventForm({ eventId, navigate }) {
+export function EditEventForm({ eventId }) {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
