@@ -60,6 +60,7 @@ export function EditEventForm({ eventId }) {
           isClosable: true,
         });
         onClose();
+        window.location.reload();
       })
       .catch(error => {
         console.error('Error:', error);

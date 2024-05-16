@@ -22,7 +22,7 @@ import {
   Container,
 } from '@chakra-ui/react';
 import { useState, useEffect} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const EventsPage = () => {
   const [events, setEvents] = useState([]);
@@ -39,12 +39,20 @@ export const EventsPage = () => {
   const [categories, setCategories] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [filteredEvents, setFilteredEvents] = useState([]);
+  const navigate = useNavigate();
+
+  const fetchEvents = async () => {
+    const response = await fetch('http://localhost:3000/events');
+    const events = await response.json();
+    setEvents(events);
+  };
 
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch('http://localhost:3000/events');
       const events = await response.json();
-    
+      setEvents(events);
+
       let filtered = [...events];
     
       if (searchTerm) {
@@ -67,7 +75,6 @@ export const EventsPage = () => {
       }
     
       setFilteredEvents(filtered);
-      setEvents(events);
     };
   
     const fetchCategories = async () => {
@@ -95,8 +102,9 @@ export const EventsPage = () => {
     });
   
     const newEvent = await response.json();
-    setEvents([...events, newEvent]);
+    setEvents((prevEvents) => [...prevEvents, newEvent]);
     onClose();
+    window.location.reload();
   };
   
   const handleCategoryChange = (event) => {
@@ -175,7 +183,10 @@ export const EventsPage = () => {
                 <Select
                   placeholder="Select categories"
                   value={selectedCategories}
-                  onChange={(e) => setSelectedCategories(e.target.value)}
+                  onChange={(e) => {
+                    const values = Array.from(e.target.selectedOptions, option => option.value);
+                    setSelectedCategories(values);
+                  }}
                   multiple
                   color="black"
                 >
