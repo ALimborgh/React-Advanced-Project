@@ -18,6 +18,8 @@ import {
   Select,
   VStack,
   Stack,
+  SimpleGrid,
+  Container,
 } from '@chakra-ui/react';
 import { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
@@ -99,6 +101,7 @@ export const EventsPage = () => {
 
   return (
     <>
+    <Container maxW="container.l">
      <Heading>List of events</Heading>
       <Stack
         direction={{ base: "column", md: "row" }}
@@ -131,7 +134,7 @@ export const EventsPage = () => {
             >Add event</Button>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
-          <ModalContent bg="gray.700" color="white">
+          <ModalContent bg="gray.800" color="white">
             <ModalHeader>Add a new event</ModalHeader>
             <ModalCloseButton color="white" />
             <ModalBody>
@@ -153,68 +156,70 @@ export const EventsPage = () => {
               </FormControl>
               <FormControl>
                 <FormLabel>Start Time</FormLabel>
-                <Input placeholder="Start Time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+                <Input placeholder="Start Time" type="datetime-local" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
               </FormControl>
               <FormControl>
                 <FormLabel>End Time</FormLabel>
-                <Input placeholder="End Time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Categories</FormLabel>
-                <Select 
-                  placeholder="Select categories" 
-                  multiple value={selectedCategories} 
-                  onChange={(e) => setSelectedCategories(Array.from(e.target.selectedOptions, option => option.value))}
-                  bg="gray.700"
-                  color="black"
-                  >
-                  {categories.map((category, index) => (
-                    <option key={index} value={category}>{category}</option>
-                  ))}
-                </Select>
+                <Input placeholder="End Time" type="datetime-local" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
               </FormControl>
             </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={handleAddEvent}>Add event</Button>
+            <Button             
+            shadow="md"
+            borderWidth="1px"
+            borderRadius="lg"
+            bg="gray.700"
+            color="white" 
+            onClick={handleAddEvent}
+            >Add event</Button>
           </ModalFooter>
         </ModalContent>
         </Modal>
-        <VStack spacing={5} align="start">
-          {filteredEvents.map((event, index) => (
-            <Stack
-              key={index}
-              p={5}
-              shadow="md"
-              borderWidth="1px"
-              borderRadius="lg"
-              overflow="hidden"
-              bg="gray.700"
-              color="white"
-              direction={{ base: "column", md: "row" }}
-              spacing={5}
-            >
-              <Box flexShrink={0} width={{ base: "100%", md: "150px" }}>
-                <Image boxSize={{ base: "100%", md: "150px" }} src={event.image} alt={event.title} />
-              </Box>
-              <Box ml={{ base: 0, md: 5 }} mt={{ base: 5, md: 0 }} width={{ base: "100%", md: "auto" }}>
-                <Link to={`/events/${event.id}`}>
-                  <Heading fontSize="xl">{event.title}</Heading>
-                  <Text mt={4}>{event.description}</Text>
-                  <Text mt={4}>Start Time: {event.startTime}</Text>
-                  <Text mt={4}>End Time: {event.endTime}</Text>
-                  <Text mt={4}>
-                    Categories:{" "}
-                    {event.categoryIds ? event.categoryIds.map(id => {
-                      const matchingCategory = categories.find(category => category.id === id.toString());
-                      return matchingCategory?.name;
-                    }).join(', ') : 'None'}
-                  </Text>
-                </Link>
-              </Box>
-            </Stack>
-          ))}
-        </VStack>
+          <VStack spacing={5} align="start">
+            <SimpleGrid columns={{ base:1 , md:3}} spacing={5} >
+            {events
+            .filter(event => event.title.includes(searchTerm) || event.description.includes(searchTerm))
+            .map((event) => (
+                <Stack
+                  key={event.id}
+                  shadow="md"
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  overflow="hidden"
+                  bg="gray.700"
+                  color="white"
+                  p={5}
+                >
+                  <Box flexShrink={0}>
+                    <Image boxSize="100%" objectFit="cover" src={event.image} alt={event.title} />
+                  </Box>
+                  <Box mt={5}>
+                    <Link to={`/events/${event.id}`}>
+                      <Heading fontSize="xl">{event.title}</Heading>
+                      <Text mt={4}>{event.description}</Text>
+                      <Text mt={4}>Start Time: {event.startTime}</Text>
+                      <Text mt={4}>End Time: {event.endTime}</Text>
+                      <Text mt={4}>
+                        Categories:{" "}
+                        {event.categoryIds
+                          ? event.categoryIds
+                              .map((id) => {
+                                const matchingCategory = categories.find(
+                                  (category) => category.id === id.toString()
+                                );
+                                return matchingCategory?.name;
+                              })
+                              .join(", ")
+                          : "None"}
+                      </Text>
+                    </Link>
+                  </Box>
+                </Stack>
+              ))}
+            </SimpleGrid>
+          </VStack>
       </Box>
+      </Container>
     </>
   );
 }

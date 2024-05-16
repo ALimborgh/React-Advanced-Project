@@ -4,7 +4,7 @@ import {EventDetails} from '../components/EventDetails'
 import {UserDetails} from '../components/UserDetails';
 import {EditEventForm} from '../components/EditEventForm';
 import {EventDeleteButton} from '../components/EventDeleteButton';
-import { Box, Button, CircularProgress, Heading, VStack, Text } from '@chakra-ui/react';
+import { Box, Button, CircularProgress, Heading, VStack, Text, Flex, Container } from '@chakra-ui/react';
 
 export const SeparateEvent = () => {
   const [event, setEvent] = useState(null);
@@ -70,37 +70,43 @@ export const SeparateEvent = () => {
   }
 
   return (
-    <VStack spacing={4} align="start">
-      <Button 
-        color="white" 
-        bg="gray.700" 
-        mt={4} 
-        onClick={() => navigate('/')}
-        borderColor="white"
-        variant="outline"
-        >Go Home</Button>
-      {isLoading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-          <CircularProgress isIndeterminate color="green.300" />
-        </Box>
-      ) : (
-        <>
-          <Heading as="h1" size="xl" mb={4}>
-            Event Details
-          </Heading>
-          <EventDetails event={event} user={user} categories={categories}/>
-          <Heading as="h2" size="lg" mt={8} mb={4}>
-            User Details
-          </Heading>
-          <UserDetails user={user} />
+    <Container maxW="container.l">
+      <VStack spacing={4} align="start">
+        <Button 
+          color="white" 
+          bg="gray.700" 
+          mt={4} 
+          onClick={() => navigate('/')}
+          borderColor="white"
+          variant="outline"
+          >Go Home</Button>
+        {isLoading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+            <CircularProgress isIndeterminate color="green.300" />
+          </Box>
+        ) : (
+          <>
           <Box mt={8}>
-            <EditEventForm event={event} />
-          </Box>
-          <Box mt={4}>
-            <EventDeleteButton eventId={id} colorScheme="red" />
-          </Box>
-        </>
-      )}
-    </VStack>
+              <Flex direction="column" justifyContent="center" alignItems="center">
+                <Heading as="h1" size="xl" mb={4}>
+                  Event Details
+                </Heading>
+                <EventDetails event={event} user={user} categories={categories}/>
+                <Heading as="h2" size="lg" mt={8} mb={4}>
+                  User Details
+                </Heading>
+                <UserDetails user={user} />
+                <Box mt={8}>
+                  <EditEventForm event={event} />
+                </Box>
+                <Box mt={4}>
+                  <EventDeleteButton eventId={id} colorScheme="red" />
+                </Box>
+              </Flex>
+            </Box>
+          </>
+        )}
+      </VStack>
+    </Container>
   );
 };
